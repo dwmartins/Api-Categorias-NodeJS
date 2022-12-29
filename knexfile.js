@@ -1,6 +1,6 @@
 module.exports = {
     client: "mysql2",
-    conection: {
+    connection: {
         database: "apinode",
         user: "root",
         password: ""
