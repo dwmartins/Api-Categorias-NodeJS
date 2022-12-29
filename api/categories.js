@@ -6,8 +6,26 @@ module.exports = (app) => {
         return res.json(categories);
     }
 
+    const getBYid = async (req, res) => {
+        const idCategory = req.params.id;
+
+        const categoryExists = await app.database("categories").where({id: req.params.id}).first();
+
+        if(!categoryExists) {
+            return res.status(400).json({"error": "Categoria não encontrada"});
+        }
+
+        const category = await app.database("categories").where({id: idCategory}).first();
+
+        return res.json(category);
+    }
+
 	const save = async (req, res) => {
 		const category = {...req.body}
+
+        if(req.params.id) {
+            category.id = req.params.id;
+        }
 
         if(!category.name) {
             return res.status(400).json({"error": "Nome da categoria não informado"});
@@ -24,11 +42,20 @@ module.exports = (app) => {
 		
         category.image = "category.png";
 
-        app
-        .database("categories")
-        .insert(category)
-        .then(()=> res.status(200).send())
-        .catch((err)=> res.status(500).send(err))
+        if(req.params.id) {
+           await app
+                .database("categories")
+                .update(category)
+                .where({id: category.id})
+                .then(()=> res.status(200).send())
+                .catch((err)=> res.status(500).send(err))
+        } else {
+            await app
+                .database("categories")
+                .insert(category)
+                .then(()=> res.status(200).send())
+                .catch((err)=> res.status(500).send(err))
+        }
 
 	}
 
@@ -52,5 +79,5 @@ module.exports = (app) => {
         res.status(200).send();
     }
 
-	return {get, save, remove}
+	return {get, getBYid ,save, remove}
 }
