@@ -19,12 +19,33 @@ app.get("/users", (req, res) => {
   return res.json(users);
 });
 
+//Pegar um dado pelo id
+app.get("/users/:id", (req, res) => {
+  const idUser = req.params;
+
+  return res.json(idUser);
+});
+
 //Enviar um dado
 app.post("/users", (req, res) => {
 
   const user = req.body;
 
   return res.json(user);
-})
+});
+
+//Editar um dado
+app.put("/users/:id", (req, res) => {
+  const idUser = req.params;
+  const user = req.body;
+  return res.json(user);
+});
+
+//Deleta um dado
+app.delete("/users/:id", (req, res) => {
+  const idUser = req.params;
+
+  return res.json(idUser);
+});
 
 app.listen(3002);
